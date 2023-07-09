@@ -10,13 +10,34 @@ type Users {
   language: String!
 }
 
+type Tags {
+  name: String!
+}
+
+type Posts {
+  title: String!
+  description: String!
+  time: DateTime!
+  likes: [Users!]!
+  tags: [Tags!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
+  tags: [Tags!]!
   users: [Users!]!
   user(email: String!, password: String!): Users!
+  posts: [Posts!]!
 }
 
 type Mutation {
+  createTag(name: String!): Tags!
   createUser(userInput: CreateUserInput!): Users!
+  createPost(input: CreatePostInput!): Posts!
 }
 
 input CreateUserInput {
@@ -25,4 +46,9 @@ input CreateUserInput {
   password: String!
   country: String!
   language: String!
+}
+
+input CreatePostInput {
+  title: String!
+  description: String!
 }

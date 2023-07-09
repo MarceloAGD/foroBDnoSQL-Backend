@@ -1,12 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql"; 
-import { ObjectId } from "mongodb";
-import { Column, Entity, ObjectIdColumn } from "typeorm";
+import { Column, Entity, ObjectIdColumn, ObjectId, CreateDateColumn} from "typeorm";
+import { Users } from "./users.entity";
+import { Tags } from "./tags.entity";
 
-Entity()
-ObjectType()
-export class Post{
+@Entity()
+@ObjectType()
+export class Posts{
+    
     @ObjectIdColumn()
-    @Field()
     id: ObjectId;
 
     @Column()
@@ -18,11 +19,15 @@ export class Post{
     description: string;
 
     @Column({type: 'timestamptz'})
+    @CreateDateColumn()
     @Field()
     time: Date;
 
     @Column()
-    @Field()
-    likes: []
+    @Field(()=> [Users])
+    likes: Users[];
 
+    @Column()
+    @Field(()=> [Tags])
+    tags: Tags[]
 }

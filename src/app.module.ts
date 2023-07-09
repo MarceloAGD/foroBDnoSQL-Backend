@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './modules/users.module';
 import { TagsModule } from './modules/tags.module';
 import { PostsModule } from './modules/posts.module';
@@ -17,15 +15,17 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb+srv://app:bdnorelacionales@cluster0.ihbfb8e.mongodb.net/?retryWrites=true&w=majority',
+      url: 'mongodb+srv://app:bdnorelacionales@cluster0.ihbfb8e.mongodb.net/foro?retryWrites=true&w=majority',
       useNewUrlParser: true,
       synchronize: true,
       logging: true,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
+    TagsModule,
     UsersModule,
+    PostsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

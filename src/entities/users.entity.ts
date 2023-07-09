@@ -1,4 +1,4 @@
-import { Entity, Column, Unique, ObjectIdColumn} from 'typeorm';
+import { Entity, Column, Unique, ObjectIdColumn, ObjectId} from 'typeorm';
 import { ObjectType, Field} from '@nestjs/graphql';
 
 @Entity()
@@ -6,14 +6,14 @@ import { ObjectType, Field} from '@nestjs/graphql';
 export class Users{
 
     @ObjectIdColumn()
-    id: string;
+    id: ObjectId;
 
-    @Column()
+    @Column({unique: true})
     @Unique(["email"]) // Indica que el campo debe ser único en la columna "email"
     @Field()
     email: string;
     
-    @Column()
+    @Column({unique: true})
     @Unique(["nickname"]) 
     @Field()
     nickname: string;
