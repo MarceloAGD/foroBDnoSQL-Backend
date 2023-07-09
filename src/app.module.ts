@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -13,13 +14,18 @@ import { join } from 'path';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: 'mongodb+srv://app:bdnorelacionales@cluster0.ihbfb8e.mongodb.net/foro?retryWrites=true&w=majority',
-      useNewUrlParser: true,
-      synchronize: true,
-      logging: true,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mongodb',
+        url: configService.get('DB_URL'), // Updated line
+        useNewUrlParser: true,
+        synchronize: true,
+        logging: true,
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      }),
+      inject: [ConfigService],
     }),
     TagsModule,
     UsersModule,
@@ -28,4 +34,10 @@ import { join } from 'path';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  static port: number | string;
+
+  constructor(private readonly _configService: ConfigService) {
+    AppModule.port = this._configService.get('PORT');
+  }
+}
