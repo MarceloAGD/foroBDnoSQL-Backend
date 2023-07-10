@@ -1,4 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { TagInput } from 'src/dto/tag.input';
 import { Tags } from 'src/entities/tags.entity';
 import { TagsService } from 'src/services/tags.service';
 
@@ -13,7 +14,7 @@ export class TagsResolver {
     }
 
     @Mutation(() => Tags)
-    createTag(@Args('name') name: string){
-        return this.tagsService.createTag(name)
+    createTag(@Args('name') input: TagInput){
+        return this.tagsService.createTag(input);
     }
 }

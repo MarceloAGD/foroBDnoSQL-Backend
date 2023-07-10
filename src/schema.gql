@@ -18,8 +18,8 @@ type Posts {
   title: String!
   description: String!
   time: DateTime!
-  likes: [Users!]!
-  tags: [Tags!]!
+  likes: [Users!]
+  tags: [Tags!]
 }
 
 """
@@ -35,9 +35,13 @@ type Query {
 }
 
 type Mutation {
-  createTag(name: String!): Tags!
+  createTag(name: TagInput!): Tags!
   createUser(userInput: CreateUserInput!): Users!
   createPost(input: CreatePostInput!): Posts!
+}
+
+input TagInput {
+  name: String!
 }
 
 input CreateUserInput {
@@ -51,4 +55,5 @@ input CreateUserInput {
 input CreatePostInput {
   title: String!
   description: String!
+  tags: [TagInput!]!
 }

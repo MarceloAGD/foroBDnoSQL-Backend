@@ -8,7 +8,7 @@ export class Tags{
     @ObjectIdColumn()
     id: ObjectId;
 
-    @Column()
+    @Column({unique: true})
     @Field()
     name: string;
 }

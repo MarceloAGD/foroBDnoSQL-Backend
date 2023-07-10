@@ -24,10 +24,10 @@ export class Posts{
     time: Date;
 
     @Column()
-    @Field(()=> [Users])
-    likes: Users[];
+    @Field(()=> [Users], {nullable: true})
+    likes?: Users[];
 
     @Column()
-    @Field(()=> [Tags])
-    tags: Tags[]
+    @Field(()=> [Tags], {nullable: true})
+    tags?: Tags[]
 }
