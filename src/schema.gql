@@ -8,6 +8,7 @@ type Users {
   password: String!
   country: String!
   language: String!
+  friend: [Users!]
 }
 
 type Tags {

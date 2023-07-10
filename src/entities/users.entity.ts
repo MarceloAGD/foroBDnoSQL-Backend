@@ -30,4 +30,7 @@ export class Users{
     @Field()
     language: string;
 
+    @Column()
+    @Field(()=> [Users], {nullable: true})
+    friend: Users[];
 }
