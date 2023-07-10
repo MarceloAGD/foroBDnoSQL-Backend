@@ -25,9 +25,9 @@ export class Posts{
 
     @Column()
     @Field(()=> [Users])
-    likes: Users[];
+    likes?: Users[];
 
     @Column()
     @Field(()=> [Tags])
-    tags: Tags[]
+    tags?: Tags[]
 }
