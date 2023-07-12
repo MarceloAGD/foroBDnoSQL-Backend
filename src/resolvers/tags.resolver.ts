@@ -14,7 +14,7 @@ export class TagsResolver {
     }
 
     @Mutation(() => Tags)
-    createTag(@Args('name') input: TagInput){
+    createTag(@Args('input') input: TagInput){
         return this.tagsService.createTag(input);
     }
 }
