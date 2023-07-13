@@ -18,6 +18,10 @@ export class Posts{
     @Field()
     description: string;
 
+    @Column()
+    @Field()
+    author: string;
+
     @Column({type: 'timestamptz'})
     @CreateDateColumn()
     @Field()
@@ -26,8 +30,16 @@ export class Posts{
     @Column()
     @Field(()=> [Users], {nullable: true})
     likes?: Users[];
+    
+    @Column() 
+    @Field(()=> [Users], {nullable: true})
+    dislikes?: Users[];
 
     @Column()
     @Field(()=> [Tags], {nullable: true})
-    tags?: Tags[]
+    tags?: Tags[];
+
+    @Column() 
+    @Field(()=> [Users], {nullable: true})
+    mentions?: Users[];
 }

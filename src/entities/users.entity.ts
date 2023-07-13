@@ -1,6 +1,7 @@
 import { Entity, Column, Unique, ObjectIdColumn, ObjectId} from 'typeorm';
 import { ObjectType, Field} from '@nestjs/graphql';
 import { IsEmail } from 'class-validator';
+import { Posts } from './post.entity';
 
 
 @Entity()
@@ -37,4 +38,12 @@ export class Users{
     @Column()
     @Field(()=> [Users], {nullable: true})
     friend: Users[];
+
+    @Column()
+    @Field(()=> [Users], {nullable: true})
+    friendRequest: Users[];
+
+    @Column()
+    @Field(()=> [Posts], {nullable: true})
+    posts: Posts[];
 }

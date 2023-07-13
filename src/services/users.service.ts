@@ -39,5 +39,12 @@ export class UsersService {
         const newUser = this.usersRepository.create({ ...userData, password: hashedPassword });
         return this.usersRepository.save(newUser);
       }
+
+    async friendRequest(){
+
+    }
       
+    async confirmRequest(){
+
+    }
 }
