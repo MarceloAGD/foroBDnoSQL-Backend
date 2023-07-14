@@ -9,6 +9,7 @@ type Users {
   country: String!
   language: String!
   friend: [Users!]
+  friendRequest: [Users!]
 }
 
 type Tags {
@@ -41,6 +42,7 @@ type Query {
   tags: [Tags!]!
   users: [Users!]!
   user(email: String!, password: String!): Users!
+  userByEmail(email: String!): Users!
   posts: [Posts!]!
   postsByCommunity(communityName: String!): [Posts!]!
   communities: [Communities!]!

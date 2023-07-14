@@ -32,6 +32,10 @@ export class Users{
     language: string;
 
     @Column()
-    @Field(()=> [Users], {nullable: true})
+    @Field(() => [Users], { nullable: true })
     friend: Users[];
+  
+    @Column()
+    @Field(() => [Users], { nullable: true })
+    friendRequest: Users[];
 }

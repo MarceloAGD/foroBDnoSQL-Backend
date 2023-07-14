@@ -23,4 +23,9 @@ export class UsersResolver {
   createUser(@Args('userInput') userInput: CreateUserInput){
     return this.usersService.createUser(userInput)
   }
+
+  @Query(() => Users)
+  userByEmail(@Args('email') email: string) {
+    return this.usersService.getUserByEmail(email);
+  }
 }

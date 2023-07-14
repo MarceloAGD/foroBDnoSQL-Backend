@@ -36,8 +36,13 @@ export class UsersService {
     async createUser(user: CreateUserInput): Promise<Users> {
         const { password, ...userData } = user;
         const hashedPassword = await bcrypt.hash(password, 10);
+        
         const newUser = this.usersRepository.create({ ...userData, password: hashedPassword });
+        newUser.friend= []
+        newUser.friendRequest=[]
         return this.usersRepository.save(newUser);
+    }
+    async getUserByEmail(email: string): Promise<Users> {
+        return this.usersRepository.findOne({where: { email }});
       }
-      
 }
