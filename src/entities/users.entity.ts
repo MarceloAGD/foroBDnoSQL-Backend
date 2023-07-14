@@ -11,14 +11,11 @@ export class Users{
     id: ObjectId;
 
     @Column({unique: true})
-    
-    @Unique(["email"]) // Indica que el campo debe ser único en la columna "email"
     @Field()
     @IsEmail() 
     email: string;
     
     @Column({unique: true})
-    @Unique(["nickname"]) 
     @Field()
     nickname: string;
     

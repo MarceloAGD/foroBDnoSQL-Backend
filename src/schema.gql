@@ -28,17 +28,29 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Communities {
+  name: String!
+  description: String!
+  createdby: String!
+  members: [Users!]
+  tags: [Tags!]
+}
+
 type Query {
   tags: [Tags!]!
   users: [Users!]!
   user(email: String!, password: String!): Users!
   posts: [Posts!]!
+  communities: [Communities!]!
+  community(name: String!): Communities!
+  communitiesByUserEmail(email: String!): [Communities!]!
 }
 
 type Mutation {
   createTag(input: TagInput!): Tags!
   createUser(userInput: CreateUserInput!): Users!
   createPost(input: CreatePostInput!): Posts!
+  createCommunity(name: String!, description: String!, createdby: String!, members: [String!]! = [], tags: [String!]!): Communities!
 }
 
 input TagInput {
