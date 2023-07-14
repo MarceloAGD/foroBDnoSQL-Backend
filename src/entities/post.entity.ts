@@ -30,4 +30,8 @@ export class Posts{
     @Column()
     @Field(()=> [Tags], {nullable: true})
     tags?: Tags[]
+
+    @Column()
+    @Field({nullable: true})
+    community?: string;
 }

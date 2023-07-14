@@ -16,4 +16,8 @@ export class CreatePostInput {
     
     @Field(()=> [TagInput])
     tags?: TagInput[];
+
+    
+    @Field({nullable: true})
+    community?: string;
 }

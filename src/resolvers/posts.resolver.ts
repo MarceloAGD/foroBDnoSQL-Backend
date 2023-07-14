@@ -11,6 +11,11 @@ export class PostsResolver {
     posts(){
         return this.postsService.findAll();
     }
+    
+    @Query(() => [Posts])
+    postsByCommunity(@Args('communityName') communityName: string) {
+      return this.postsService.findPostsByCommunity(communityName);
+    }
 
     @Mutation(()=> Posts)
     createPost(@Args('input') input: CreatePostInput){
