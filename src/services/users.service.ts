@@ -7,42 +7,149 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-    constructor(
-        @InjectRepository(Users) 
-        private usersRepository : Repository<Users>,
-        ){}
+  constructor(
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
+  ) {}
 
-    async findAll(): Promise<Users[]> {
-        return this.usersRepository.find();
-    }
-    
-    async findOne(email: string): Promise<Users>{
-        return this.usersRepository.findOne({
-            where:{
-                email,
-            }
-        })
+  async findAll(): Promise<Users[]> {
+    return this.usersRepository.find();
+  }
+
+  async findOne(email: string): Promise<Users> {
+    return this.usersRepository.findOne({
+      where: {
+        email,
+      },
+    });
+  }
+
+  async findUserByEmailPassword(
+    email: string,
+    password: string,
+  ): Promise<Users> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
     }
 
-    async findUserByEmailPassword(email: string, password: string): Promise<Users>{
-        const user = await this.usersRepository.findOne({ where: {email} });
-        if (user && (await bcrypt.compare(password, user.password))) {
-            return user;
-          }
-        
-          return null;
+    return null;
+  }
+
+  async createUser(user: CreateUserInput): Promise<Users> {
+    const { password, ...userData } = user;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = this.usersRepository.create({
+      ...userData,
+      password: hashedPassword,
+    });
+    newUser.friend = [];
+    newUser.friendRequests = [];
+    return this.usersRepository.save(newUser);
+  }
+  async getUserByEmail(email: string): Promise<Users> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async sendFriendRequest(
+    senderEmail: string,
+    receiverEmail: string,
+  ): Promise<Users> {
+    const sender = await this.getUserByEmail(senderEmail);
+    const receiver = await this.getUserByEmail(receiverEmail);
+
+    if (!sender || !receiver) {
+      throw new Error('Sender or receiver not found');
     }
-    
-    async createUser(user: CreateUserInput): Promise<Users> {
-        const { password, ...userData } = user;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        const newUser = this.usersRepository.create({ ...userData, password: hashedPassword });
-        newUser.friend= []
-        newUser.friendRequest=[]
-        return this.usersRepository.save(newUser);
+
+    if (sender.friend.some((friend) => friend.email === receiver.email)) {
+      throw new Error('Receiver is already a friend');
     }
-    async getUserByEmail(email: string): Promise<Users> {
-        return this.usersRepository.findOne({where: { email }});
-      }
+
+    if (
+      sender.friendRequests.some((friend) => friend.email === receiver.email)
+    ) {
+      throw new Error('Friend request already sent');
+    }
+
+    const senderWithoutFriendRequests: Partial<Users> = {
+      id: sender.id,
+      nickname: sender.nickname,
+      friendRequests: [...sender.friendRequests, receiver],
+    };
+
+    const receiverWithoutFriendRequests: Partial<Users> = {
+      id: receiver.id,
+      nickname: receiver.nickname,
+      friendRequests: [...receiver.friendRequests, sender],
+    };
+
+    await this.usersRepository.save(senderWithoutFriendRequests);
+    await this.usersRepository.save(receiverWithoutFriendRequests);
+
+    return senderWithoutFriendRequests as Users;
+  }
+
+  async acceptFriendRequest(
+    senderEmail: string,
+    receiverEmail: string,
+  ): Promise<Users> {
+    const sender = await this.getUserByEmail(senderEmail);
+    const receiver = await this.getUserByEmail(receiverEmail);
+
+    if (!sender || !receiver) {
+      throw new Error('Sender or receiver not found');
+    }
+
+    // Eliminar la solicitud de amistad del remitente
+    sender.friendRequests = sender.friendRequests.filter(
+      (friend) => friend.email !== receiver.email,
+    );
+
+    // Eliminar la solicitud de amistad del receptor
+    receiver.friendRequests = receiver.friendRequests.filter(
+      (friend) => friend.email !== sender.email,
+    );
+
+    // Agregar el remitente como amigo del receptor
+    const updatedReceiver = Object.assign({}, receiver);
+    updatedReceiver.friend = [...receiver.friend, sender];
+
+    // Agregar el receptor como amigo del remitente
+    const updatedSender = Object.assign({}, sender);
+    updatedSender.friend = [...sender.friend, receiver];
+
+    // Guardar los cambios en la base de datos
+    await this.usersRepository.save([updatedSender, updatedReceiver]);
+
+    return updatedReceiver;
+  }
+
+  async declineFriendRequest(
+    senderEmail: string,
+    receiverEmail: string,
+  ): Promise<Users> {
+    const sender = await this.getUserByEmail(senderEmail);
+    const receiver = await this.getUserByEmail(receiverEmail);
+
+    if (!sender || !receiver) {
+      throw new Error('Sender or receiver not found');
+    }
+
+    // Eliminar la solicitud de amistad del remitente
+    sender.friendRequests = sender.friendRequests.filter(
+      (friend) => friend.email !== receiver.email,
+    );
+
+    // Eliminar la solicitud de amistad del receptor
+    receiver.friendRequests = receiver.friendRequests.filter(
+      (friend) => friend.email !== sender.email,
+    );
+
+    // Guardar los cambios en la base de datos
+    await this.usersRepository.save([sender, receiver]);
+
+    return receiver;
+  }
 }

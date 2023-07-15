@@ -37,5 +37,6 @@ export class Users{
   
     @Column()
     @Field(() => [Users], { nullable: true })
-    friendRequest: Users[];
+    friendRequests: Users[];
+    
 }

@@ -9,7 +9,7 @@ type Users {
   country: String!
   language: String!
   friend: [Users!]
-  friendRequest: [Users!]
+  friendRequests: [Users!]
 }
 
 type Tags {
@@ -53,6 +53,9 @@ type Query {
 type Mutation {
   createTag(input: TagInput!): Tags!
   createUser(userInput: CreateUserInput!): Users!
+  sendFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
+  acceptFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
+  declineFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   createPost(input: CreatePostInput!): Posts!
   createCommunity(name: String!, description: String!, createdby: String!, members: [String!]! = [], tags: [String!]!): Communities!
 }
