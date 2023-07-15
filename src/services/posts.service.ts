@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePostInput } from 'src/dto/create-post.input';
 import { Posts } from 'src/entities/post.entity';
-import { Repository } from 'typeorm';
+import { Repository} from 'typeorm';
 import { TagsService } from './tags.service';
 import { CommunitiesService } from './communities.service';
 
@@ -13,6 +13,7 @@ export class PostsService {
         private postsRepository: Repository<Posts>,
         private tagsService: TagsService,
         private communitiesService: CommunitiesService,
+        
     ){}
 
     async findAll(): Promise<Posts[]>{
@@ -51,4 +52,10 @@ export class PostsService {
     async findPostsByCommunity(communityName: string): Promise<Posts[]> {
         return this.postsRepository.find({ where: { community: communityName } });
     }
+
+    async deletePost(postId: string): Promise<boolean> {
+        const result = await this.postsRepository.delete(postId);
+        return result.affected > 0;
+    }
+
 }

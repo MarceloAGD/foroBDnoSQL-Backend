@@ -21,4 +21,10 @@ export class PostsResolver {
     createPost(@Args('input') input: CreatePostInput){
         return this.postsService.createPost(input);
     } 
+    @Mutation(() => Boolean)
+    async deletePost(@Args('postId') postId: string): Promise<boolean> {
+      const result = await this.postsService.deletePost(postId);
+      return result;
+    }
+
 }

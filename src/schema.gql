@@ -57,6 +57,7 @@ type Mutation {
   acceptFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   declineFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   createPost(input: CreatePostInput!): Posts!
+  deletePost(postId: String!): Boolean!
   createCommunity(name: String!, description: String!, createdby: String!, members: [String!]! = [], tags: [String!]!): Communities!
 }
 
