@@ -17,7 +17,7 @@ type Tags {
 }
 
 type Posts {
-  id: String!
+  idPrimary: String!
   title: String!
   description: String!
   author: String!
@@ -61,6 +61,7 @@ type Mutation {
   declineFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   createPost(input: CreatePostInput!): Posts!
   deletePost(postId: String!): Boolean!
+  addLikeToPost(postId: String!, userEmail: String!): Posts!
   createCommunity(name: String!, description: String!, createdby: String!, members: [String!]! = [], tags: [String!]!): Communities!
 }
 
