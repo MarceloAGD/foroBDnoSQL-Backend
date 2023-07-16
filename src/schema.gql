@@ -17,6 +17,7 @@ type Tags {
 }
 
 type Posts {
+  id: String!
   title: String!
   description: String!
   author: String!

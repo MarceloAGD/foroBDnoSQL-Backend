@@ -26,6 +26,7 @@ export class PostsService {
         const post = new Posts();
         post.title = input.title;
         post.description = input.description;
+        post.likes =  [];
         post.tags = [];
     
         // Obtener el objeto Users basado en el campo author

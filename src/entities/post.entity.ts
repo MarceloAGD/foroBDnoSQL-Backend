@@ -8,6 +8,7 @@ import { Tags } from "./tags.entity";
 export class Posts{
     
     @ObjectIdColumn()
+    @Field(() => String) // Agregar el decorador @Field para exponer el campo en GraphQL
     id: ObjectId;
 
     @Column()
