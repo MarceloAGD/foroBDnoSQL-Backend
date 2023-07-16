@@ -13,6 +13,9 @@ export class CreatePostInput {
     @IsNotEmpty()
     @Field()
     description: string;
+
+    @Field()
+    author: string;
     
     @Field(()=> [TagInput])
     tags?: TagInput[];

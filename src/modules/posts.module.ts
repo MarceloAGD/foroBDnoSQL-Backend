@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagsService } from 'src/services/tags.service';
 import { TagsModule } from './tags.module';
 import { CommunitiesModule } from './communities.module';
+import { UsersModule } from './users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Posts]), TagsModule, CommunitiesModule],
+  imports: [TypeOrmModule.forFeature([Posts]), TagsModule, CommunitiesModule, UsersModule],
   providers: [PostsService, PostsResolver],
   exports: [PostsService]
 })

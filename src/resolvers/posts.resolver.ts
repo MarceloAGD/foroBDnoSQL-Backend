@@ -27,4 +27,10 @@ export class PostsResolver {
       return result;
     }
 
+    @Query(() => [Posts])
+postsByAuthor(@Args('authorEmail') authorEmail: string) {
+    return this.postsService.findPostsByAuthor(authorEmail);
+}
+
+
 }

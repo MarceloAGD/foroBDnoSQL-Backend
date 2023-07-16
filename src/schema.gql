@@ -19,6 +19,7 @@ type Tags {
 type Posts {
   title: String!
   description: String!
+  author: String!
   time: DateTime!
   likes: [Users!]
   tags: [Tags!]
@@ -45,6 +46,7 @@ type Query {
   userByEmail(email: String!): Users!
   posts: [Posts!]!
   postsByCommunity(communityName: String!): [Posts!]!
+  postsByAuthor(authorEmail: String!): [Posts!]!
   communities: [Communities!]!
   community(name: String!): Communities!
   communitiesByUserEmail(email: String!): [Communities!]!
@@ -76,6 +78,7 @@ input CreateUserInput {
 input CreatePostInput {
   title: String!
   description: String!
+  author: String!
   tags: [TagInput!]!
   community: String
 }

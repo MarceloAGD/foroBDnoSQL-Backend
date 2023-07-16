@@ -18,6 +18,10 @@ export class Posts{
     @Field()
     description: string;
 
+    @Column()
+    @Field()
+    author: string;
+    
     @Column({type: 'timestamptz'})
     @CreateDateColumn()
     @Field()

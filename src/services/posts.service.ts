@@ -5,6 +5,7 @@ import { Posts } from 'src/entities/post.entity';
 import { Repository} from 'typeorm';
 import { TagsService } from './tags.service';
 import { CommunitiesService } from './communities.service';
+import { UsersService } from './users.service';
 
 @Injectable()
 export class PostsService {
@@ -13,6 +14,7 @@ export class PostsService {
         private postsRepository: Repository<Posts>,
         private tagsService: TagsService,
         private communitiesService: CommunitiesService,
+        private usersService: UsersService,
         
     ){}
 
@@ -20,11 +22,19 @@ export class PostsService {
         return this.postsRepository.find();
     }
 
-    async createPost(input: CreatePostInput): Promise<Posts>{
+    async createPost(input: CreatePostInput): Promise<Posts> {
         const post = new Posts();
-        post.title= input.title;
+        post.title = input.title;
         post.description = input.description;
-        post.tags = []
+        post.tags = [];
+    
+        // Obtener el objeto Users basado en el campo author
+        const author = await this.usersService.getUserByEmail(input.author);
+        if (!author) {
+          throw new Error(`El usuario ${input.author} no existe.`);
+        }
+        post.author = author.email; // Asigna el correo electrónico del autor
+        
         
         if (input.community == null){
             post.community = "General";
@@ -58,4 +68,10 @@ export class PostsService {
         return result.affected > 0;
     }
 
+    async findPostsByAuthor(authorEmail: string): Promise<Posts[]> {
+        return this.postsRepository.find({ where: { author: authorEmail } });
+    }
+      
+      
+    
 }
