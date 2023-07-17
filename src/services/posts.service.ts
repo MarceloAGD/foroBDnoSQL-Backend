@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePostInput } from 'src/dto/create-post.input';
 import { Posts } from 'src/entities/post.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository , } from 'typeorm';
 import { TagsService } from './tags.service';
 import { CommunitiesService } from './communities.service';
 import { UsersService } from './users.service';
@@ -61,6 +61,20 @@ export class PostsService {
   async findPostsByCommunity(communityName: string): Promise<Posts[]> {
     return this.postsRepository.find({ where: { community: communityName } });
   }
+
+  async findPostsByTitle(postTitle: string): Promise<Posts[]> {
+    return this.postsRepository.find({ where: { title: postTitle } });
+  }
+
+  async searchPostsByTitle(keyword: string): Promise<Posts[]> {
+    const posts = await this.postsRepository.find({
+      where: {
+        title: ILike(`${keyword}%`),
+      },
+    });
+    return posts;
+  }
+  
 
   async deletePost(idPrimary: string): Promise<boolean> {
     const result = await this.postsRepository.delete({ idPrimary });

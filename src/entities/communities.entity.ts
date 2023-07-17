@@ -23,8 +23,8 @@ export class Communities{
     createdby: string;
 
     @Column()
-    @Field(()=> [Users], {nullable: true})
-    members?: Users[];
+    @Field(()=> [String], {nullable: true})
+    members?: string[];
 
     @Column()
     @Field(()=> [Tags], {nullable: true})

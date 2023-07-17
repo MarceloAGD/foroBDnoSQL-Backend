@@ -51,15 +51,16 @@ export class CommunitiesService {
     community.name = name;
     community.description = description;
     community.createdby = createdby;
-    community.members = [user];
+    community.members = [createdby];
     community.tags = tags;
 
     return this.communitiesRepository.save(community);
   }
 
-  async getCommunitiesByUser(user: Users): Promise<Communities[]> {
+  async getCommunitiesByUser(user: string): Promise<Communities[]> {
     return this.communitiesRepository.find({ where: { members: user } });
   }
+  
   async updateCommunity(community: Communities): Promise<Communities> {
     return this.communitiesRepository.save(community);
 }
