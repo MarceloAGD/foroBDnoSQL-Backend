@@ -28,6 +28,7 @@ export class PostsService {
     post.title = input.title;
     post.description = input.description;
     post.likes = [];
+    post.dislikes=[]
     post.tags = [];
 
     // Obtener el objeto Users basado en el campo author
@@ -61,8 +62,8 @@ export class PostsService {
     return this.postsRepository.find({ where: { community: communityName } });
   }
 
-  async deletePost(postId: string): Promise<boolean> {
-    const result = await this.postsRepository.delete(postId);
+  async deletePost(idPrimary: string): Promise<boolean> {
+    const result = await this.postsRepository.delete({ idPrimary });
     return result.affected > 0;
   }
 
@@ -73,19 +74,58 @@ export class PostsService {
   async addLikeToPost(postId: string, userEmail: string): Promise<Posts> {
     const post = await this.postsRepository.findOne({
       where: { idPrimary: postId },
+      relations: ['likes', 'dislikes'],
     });
     if (!post) {
       throw new Error(`No se encontró ningún post con el ID: ${postId}`);
     }
-
+  
     const user = await this.usersService.findOne(userEmail);
     if (!user) {
-      throw new Error(
-        `No se encontró ningún usuario con el email: ${userEmail}`,
-      );
+      throw new Error(`No se encontró ningún usuario con el email: ${userEmail}`);
     }
-
-    post.likes.push(user);
+  
+    const userLikesIndex = post.likes.findIndex(like => like.email === user.email);
+    if (userLikesIndex !== -1) {
+      post.likes.splice(userLikesIndex, 1); // Eliminar el "like" del usuario si ya existe en el array "likes"
+    } else {
+      const userDislikesIndex = post.dislikes.findIndex(dislike => dislike.email === user.email);
+      if (userDislikesIndex !== -1) {
+        post.dislikes.splice(userDislikesIndex, 1); // Eliminar el "dislike" del usuario si existe en el array "dislikes"
+      }
+      post.likes.push(user); // Agregar el "like" del usuario
+    }
+  
     return this.postsRepository.save(post);
   }
+  
+  async addDislikeToPost(postId: string, userEmail: string): Promise<Posts> {
+    const post = await this.postsRepository.findOne({
+      where: { idPrimary: postId },
+      relations: ['likes', 'dislikes'],
+    });
+    if (!post) {
+      throw new Error(`No se encontró ningún post con el ID: ${postId}`);
+    }
+  
+    const user = await this.usersService.findOne(userEmail);
+    if (!user) {
+      throw new Error(`No se encontró ningún usuario con el email: ${userEmail}`);
+    }
+  
+    const userDislikesIndex = post.dislikes.findIndex(dislike => dislike.email === user.email);
+    if (userDislikesIndex !== -1) {
+      post.dislikes.splice(userDislikesIndex, 1); // Eliminar el "dislike" del usuario si ya existe en el array "dislikes"
+    } else {
+      const userLikesIndex = post.likes.findIndex(like => like.email === user.email);
+      if (userLikesIndex !== -1) {
+        post.likes.splice(userLikesIndex, 1); // Eliminar el "like" del usuario si existe en el array "likes"
+      }
+      post.dislikes.push(user); // Agregar el "dislike" del usuario
+    }
+  
+    return this.postsRepository.save(post);
+  }
+  
+  
 }

@@ -36,6 +36,10 @@ export class Posts{
     likes?: Users[];
 
     @Column()
+    @Field(()=> [Users], {nullable: true})
+    dislikes?: Users[];
+
+    @Column()
     @Field(()=> [Tags], {nullable: true})
     tags?: Tags[]
 

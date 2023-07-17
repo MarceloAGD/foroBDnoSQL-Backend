@@ -21,10 +21,10 @@ export class PostsResolver {
   createPost(@Args('input') input: CreatePostInput) {
     return this.postsService.createPost(input);
   }
+  
   @Mutation(() => Boolean)
-  async deletePost(@Args('postId') postId: string): Promise<boolean> {
-    const result = await this.postsService.deletePost(postId);
-    return result;
+  async deletePost(@Args('idPrimary') idPrimary: string): Promise<boolean> {
+    return this.postsService.deletePost(idPrimary);
   }
 
   @Query(() => [Posts])
@@ -37,5 +37,13 @@ export class PostsResolver {
     @Args('userEmail') userEmail: string,
   ) {
     return this.postsService.addLikeToPost(postId, userEmail);
+  }
+
+  @Mutation(() => Posts)
+  async addDislikeToPost(
+    @Args('postId') postId: string,
+    @Args('userEmail') userEmail: string,
+  ) {
+    return this.postsService.addDislikeToPost(postId, userEmail);
   }
 }

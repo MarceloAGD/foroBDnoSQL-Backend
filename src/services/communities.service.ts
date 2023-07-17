@@ -60,5 +60,7 @@ export class CommunitiesService {
   async getCommunitiesByUser(user: Users): Promise<Communities[]> {
     return this.communitiesRepository.find({ where: { members: user } });
   }
-  
+  async updateCommunity(community: Communities): Promise<Communities> {
+    return this.communitiesRepository.save(community);
+}
 }

@@ -23,6 +23,7 @@ type Posts {
   author: String!
   time: DateTime!
   likes: [Users!]
+  dislikes: [Users!]
   tags: [Tags!]
   community: String
 }
@@ -60,9 +61,11 @@ type Mutation {
   acceptFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   declineFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   createPost(input: CreatePostInput!): Posts!
-  deletePost(postId: String!): Boolean!
+  deletePost(idPrimary: String!): Boolean!
   addLikeToPost(postId: String!, userEmail: String!): Posts!
+  addDislikeToPost(postId: String!, userEmail: String!): Posts!
   createCommunity(name: String!, description: String!, createdby: String!, members: [String!]! = [], tags: [String!]!): Communities!
+  addMemberToCommunity(name: String!, memberEmail: String!): Communities!
 }
 
 input TagInput {

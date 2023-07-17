@@ -43,10 +43,29 @@ export class CommunitiesResolver {
   @Query(() => [Communities])
   async communitiesByUserEmail(@Args('email') email: string): Promise<Communities[]> {
     const user = await this.usersService.findOne(email);
-    if (!user) {
-      throw new Error('El correo electrónico del usuario no existe en la entidad Users.');
-    }
     return this.communitiesService.getCommunitiesByUser(user);
   }
+
+  @Mutation(() => Communities)
+async addMemberToCommunity(
+  @Args('name') name: string,
+  @Args('memberEmail') memberEmail: string,
+): Promise<Communities> {
+  const community = await this.communitiesService.getCommunityByName(name);
+  const member = await this.usersService.getUserByEmail(memberEmail);
+
+  if (!community) {
+    throw new Error('La comunidad no existe.');
+  }
+
+  if (!member) {
+    throw new Error('El correo electrónico del miembro no existe en la entidad Users.');
+  }
+
+  community.members.push(member);
+  return this.communitiesService.updateCommunity(community);
+}
+
+  
   
 }
