@@ -61,6 +61,11 @@ export class CommunitiesResolver {
     if (!member) {
       throw new Error('El correo electrónico del miembro no existe en la entidad Users.');
     }
+
+    const isMemberAlreadyAdded = community.members.includes(memberEmail);
+    if (isMemberAlreadyAdded) {
+      throw new Error('El miembro ya está presente en la comunidad.');
+    }
   
     community.members = [memberEmail]; // Convertir la cadena de caracteres en un arreglo de un solo elemento
     return this.communitiesService.updateCommunity(community);
