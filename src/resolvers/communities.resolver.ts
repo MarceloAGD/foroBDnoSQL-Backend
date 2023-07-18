@@ -67,7 +67,7 @@ export class CommunitiesResolver {
       throw new Error('El miembro ya está presente en la comunidad.');
     }
   
-    community.members = [memberEmail]; // Convertir la cadena de caracteres en un arreglo de un solo elemento
+    community.members = [...community.members, memberEmail]; // Convertir la cadena de caracteres en un arreglo de un solo elemento
     return this.communitiesService.updateCommunity(community);
   }
   
