@@ -58,37 +58,30 @@ export class UsersService {
   ): Promise<Users> {
     const sender = await this.getUserByEmail(senderEmail);
     const receiver = await this.getUserByEmail(receiverEmail);
-
+  
     if (!sender || !receiver) {
       throw new Error('Sender or receiver not found');
     }
-
+  
     if (sender.friend.some((friend) => friend.email === receiver.email)) {
       throw new Error('Receiver is already a friend');
     }
-
+  
     if (
-      sender.friendRequests.some((friend) => friend.email === receiver.email)
+      receiver.friendRequests.some((friend) => friend.email === sender.email)
     ) {
-      throw new Error('Friend request already sent');
+      throw new Error('Friend request already sent to this user');
     }
-
-    const senderWithoutFriendRequests: Partial<Users> = {
-      id: sender.id,
-      nickname: sender.nickname,
-      friendRequests: [...sender.friendRequests, receiver],
-    };
-
-    const receiverWithoutFriendRequests: Partial<Users> = {
+  
+    const receiverWithFriendRequest: Partial<Users> = {
       id: receiver.id,
       nickname: receiver.nickname,
       friendRequests: [...receiver.friendRequests, sender],
     };
-
-    await this.usersRepository.save(senderWithoutFriendRequests);
-    await this.usersRepository.save(receiverWithoutFriendRequests);
-
-    return senderWithoutFriendRequests as Users;
+  
+    await this.usersRepository.save(receiverWithFriendRequest);
+  
+    return receiverWithFriendRequest as Users;
   }
 
   async acceptFriendRequest(
@@ -100,6 +93,15 @@ export class UsersService {
 
     if (!sender || !receiver) {
       throw new Error('Sender or receiver not found');
+    }
+
+    // Verificar si la solicitud de amistad existe en el receptor
+    const friendRequestExists = receiver.friendRequests.some(
+      (friend) => friend.email === sender.email,
+    );
+
+    if (!friendRequestExists) {
+      throw new Error('Friend request not found in the receiver');
     }
 
     // Eliminar la solicitud de amistad del remitente
@@ -136,7 +138,14 @@ export class UsersService {
     if (!sender || !receiver) {
       throw new Error('Sender or receiver not found');
     }
+    // Verificar si la solicitud de amistad existe en el receptor
+    const friendRequestExists = receiver.friendRequests.some(
+      (friend) => friend.email === sender.email,
+    );
 
+    if (!friendRequestExists) {
+      throw new Error('Friend request not found in the receiver');
+    }
     // Eliminar la solicitud de amistad del remitente
     sender.friendRequests = sender.friendRequests.filter(
       (friend) => friend.email !== receiver.email,
