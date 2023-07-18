@@ -7,6 +7,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CommunitiesModule } from './modules/communities.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     TagsModule,
     UsersModule,
     PostsModule,
+    CommunitiesModule,
   ],
   controllers: [],
   providers: [],

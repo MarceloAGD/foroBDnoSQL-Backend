@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql"; 
-import { Column, Entity, ObjectIdColumn, ObjectId, CreateDateColumn} from "typeorm";
+import { Column, Entity, ObjectIdColumn, ObjectId, CreateDateColumn, PrimaryColumn} from "typeorm";
 import { Users } from "./users.entity";
 import { Tags } from "./tags.entity";
 
@@ -12,6 +12,10 @@ export class Posts{
 
     @Column()
     @Field()
+    idPrimary: string;
+    
+    @Column()
+    @Field()
     title: string;
 
     @Column()
@@ -21,7 +25,7 @@ export class Posts{
     @Column()
     @Field()
     author: string;
-
+    
     @Column({type: 'timestamptz'})
     @CreateDateColumn()
     @Field()
@@ -30,16 +34,16 @@ export class Posts{
     @Column()
     @Field(()=> [Users], {nullable: true})
     likes?: Users[];
-    
-    @Column() 
+
+    @Column()
     @Field(()=> [Users], {nullable: true})
     dislikes?: Users[];
 
     @Column()
     @Field(()=> [Tags], {nullable: true})
-    tags?: Tags[];
+    tags?: Tags[]
 
-    @Column() 
-    @Field(()=> [Users], {nullable: true})
-    mentions?: Users[];
+    @Column()
+    @Field({nullable: true})
+    community?: string;
 }
