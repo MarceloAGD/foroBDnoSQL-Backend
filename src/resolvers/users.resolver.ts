@@ -28,6 +28,11 @@ export class UsersResolver {
     return this.usersService.getUserByEmail(email);
   }
 
+  @Query(() => Users)
+  userByNickname(@Args('nickname') nickname: string) {
+    return this.usersService.findUserByNickname(nickname);
+  }
+
   @Mutation(() => Users)
   sendFriendRequest(
     @Args('senderEmail') senderEmail: string,
@@ -51,5 +56,18 @@ export class UsersResolver {
     @Args('receiverEmail') receiverEmail: string,
   ) {
     return this.usersService.declineFriendRequest(senderEmail, receiverEmail);
+  }
+
+  @Mutation(() => Boolean)
+  async deleteFriend(
+    @Args('userEmail') userEmail: string,
+    @Args('friendEmail') friendEmail: string,
+  ) {
+    // Llamamos al servicio para eliminar la amistad entre los usuarios y obtener los usuarios actualizados.
+    const users = await this.usersService.deleteFriend(userEmail, friendEmail);
+
+    // Aquí puedes agregar la lógica para enviar los correos a los usuarios si es necesario.
+
+    return users;
   }
 }

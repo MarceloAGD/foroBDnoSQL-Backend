@@ -59,7 +59,15 @@ export class PostsService {
   }
 
   async findPostsByCommunity(communityName: string): Promise<Posts[]> {
-    return this.postsRepository.find({ where: { community: communityName } });
+    // Aquí realizas la consulta a la base de datos ordenando por el campo 'time'
+    const posts = await this.postsRepository.find({
+      where: { community: communityName },
+      order: {
+        time: 'DESC',
+      },
+    });
+
+    return posts;
   }
 
   async findPostsByTitle(postTitle: string): Promise<Posts[]> {
@@ -82,7 +90,9 @@ export class PostsService {
   }
 
   async findPostsByAuthor(authorEmail: string): Promise<Posts[]> {
-    return this.postsRepository.find({ where: { author: authorEmail } });
+    return this.postsRepository.find({ where: { author: authorEmail  } ,  order: {
+      time: 'DESC',
+    },});
   }
 
   async addLikeToPost(postId: string, userEmail: string): Promise<Posts> {
