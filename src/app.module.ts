@@ -4,16 +4,17 @@ import { TagsModule } from './modules/tags.module';
 import { PostsModule } from './modules/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
+import {ApolloFederationDriver,ApolloFederationDriverConfig,} from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CommunitiesModule } from './modules/communities.module';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: {
+        federation: 2,
+      },
     }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
