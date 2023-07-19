@@ -24,6 +24,14 @@ export class UsersService {
     });
   }
 
+  async findUserByNickname(nickname: string): Promise<Users> {
+    return this.usersRepository.findOne({
+      where: {
+        nickname,
+      },
+    });
+  }
+
   async findUserByEmailPassword(
     email: string,
     password: string,
@@ -61,6 +69,10 @@ export class UsersService {
   
     if (!sender || !receiver) {
       throw new Error('Sender or receiver not found');
+    }
+    if (senderEmail == receiverEmail){
+      throw new Error('Sender and receiver is the same');
+      
     }
   
     if (sender.friend.some((friend) => friend.email === receiver.email)) {
@@ -160,5 +172,31 @@ export class UsersService {
     await this.usersRepository.save([sender, receiver]);
 
     return receiver;
+  }
+
+  async deleteFriend(userEmail: string, friendEmail: string): Promise<Boolean> {
+    // Obtener los usuarios basados en sus correos electrónicos.
+    const user = await this.getUserByEmail(userEmail);
+    const friend = await this.getUserByEmail(friendEmail);
+
+    // Verificar si ambos usuarios existen.
+    if (!user || !friend) {
+      throw new Error('No se encontró uno o ambos usuarios.');
+    }
+  // Verificar si el amigo existe en la lista de amigos del usuario.
+  const friendExists = user.friend.some((u) => u.email === friendEmail);
+
+  if (!friendExists) {
+    throw new Error('Friend not found in the user');
+  }
+
+    // Eliminar la amistad entre ellos.
+    user.friend = user.friend.filter(f => f.email !== friendEmail);
+    friend.friend = friend.friend.filter(f => f.email !== userEmail);
+
+    // Guardar los cambios en la base de datos.
+    await this.usersRepository.save([user, friend]);
+
+    return true;
   }
 }

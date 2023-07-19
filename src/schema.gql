@@ -46,6 +46,7 @@ type Query {
   users: [Users!]!
   user(email: String!, password: String!): Users!
   userByEmail(email: String!): Users!
+  userByNickname(nickname: String!): Users!
   posts: [Posts!]!
   postsByCommunity(communityName: String!): [Posts!]!
   postsByTitle(title: String!): [Posts!]!
@@ -62,6 +63,7 @@ type Mutation {
   sendFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   acceptFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
   declineFriendRequest(senderEmail: String!, receiverEmail: String!): Users!
+  deleteFriend(userEmail: String!, friendEmail: String!): Boolean!
   createPost(input: CreatePostInput!): Posts!
   deletePost(idPrimary: String!): Boolean!
   addLikeToPost(postId: String!, userEmail: String!): Posts!
